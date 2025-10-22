@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Task 2 - Contact Form & To-Do List</title>
+<style>
+    /* Background & Font - Same as Task 1 */
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: radial-gradient(circle at top left, #dceefb, #c3e6e4, #f0f4f8);
+      margin: 0;
+      color: #222;
+    }
+
+    /* Navigation Bar */
+    nav {
+      background: #4a90e2;
+      padding: 15px 25px;
+      color: white;
+      font-weight: 500;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    nav h1 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 15px;
+      margin: 0;
+      padding: 0;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      transition: opacity 0.3s ease;
+    }
+    nav a:hover {
+      opacity: 0.8;
+    }
+
+    /* Layout */
+    .container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      padding: 30px;
+    }
+
+    /* Card Style */
+    .card {
+      background: rgba(255, 255, 255, 0.85);
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+    .card h2 {
+      margin-bottom: 15px;
+      color: #4a90e2;
+    }
+
+    /* Input & Textarea Styling */
+    input[type="text"], input[type="email"], textarea {
+      padding: 12px;
+      width: 100%;
+      font-size: 15px;
+      border: 1px solid #bbb;
+      border-radius: 6px;
+      outline: none;
+      transition: border-color 0.2s ease;
+      margin-top: 5px;
+    }
+    input:focus, textarea:focus {
+      border-color: #4a90e2;
+    }
+
+    /* Button Styling - Matches Task 1 */
+    button {
+      padding: 12px 20px;
+      font-size: 15px;
+      margin-top: 12px;
+      background: #4a90e2;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+    button:hover {
+      background: #3b78c2;
+      transform: translateY(-1px);
+    }
+
+    /* Error Messages */
+    .error {
+      color: red;
+      font-size: 13px;
+    }
+
+    /* To-Do List */
+    ul {
+      list-style-type: none;
+      padding: 0;
+      margin-top: 15px;
+    }
+    li {
+      padding: 12px 15px;
+      margin: 10px 0;
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+    li.completed span {
+      text-decoration: line-through;
+      opacity: 0.6;
+    }
+    .deleteBtn {
+      background: #e94f4f;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      padding: 5px 8px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+    .deleteBtn:hover {
+      background: #c73e3e;
+      transform: scale(1.05);
+    }
+
+    /* Responsive */
+    @media(max-width: 768px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+    }
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav>
+  <h1>My Web App</h1>
+  <ul>
+    <li><a href="#">Home</a></li>
+    <li><a href="#">Contact</a></li>
+    <li><a href="#">Tasks</a></li>
+  </ul>
+</nav>
+
+<!-- Main Content -->
+<div class="container">
+
+  <!-- Contact Form -->
+  <div class="card">
+    <h2>Contact Us</h2>
+    <form id="contactForm">
+      <label>Name:</label>
+      <input type="text" id="name" placeholder="Enter your name">
+      <span class="error" id="nameError"></span>
+
+      <label>Email:</label>
+      <input type="email" id="email" placeholder="Enter your email">
+      <span class="error" id="emailError"></span>
+
+      <label>Message:</label>
+      <textarea id="message" placeholder="Write your message"></textarea>
+      <span class="error" id="messageError"></span>
+
+      <button type="submit">Send</button>
+    </form>
+  </div>
+
+  <!-- To-Do List -->
+  <div class="card">
+    <h2>To-Do List</h2>
+    <input type="text" id="taskInput" placeholder="Enter a task">
+    <button type="button" onclick="addTask()">Add Task</button>
+    <ul id="taskList"></ul>
+  </div>
+</div>
+
+<script>
+  // Contact Form Validation
+  document.getElementById("contactForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    let valid = true;
+
+    const name = document.getElementById("name").value.trim();
+    if(name === ""){
+      document.getElementById("nameError").innerText = "Name is required";
+      valid = false;
+    } else {
+      document.getElementById("nameError").innerText = "";
+    }
+
+    const email = document.getElementById("email").value.trim();
+    const emailPattern = /^[^ ]+@[^ ]+\.[a-z]{2,3}$/;
+    if(email === ""){
+      document.getElementById("emailError").innerText = "Email is required";
+      valid = false;
+    } else if(!email.match(emailPattern)){
+      document.getElementById("emailError").innerText = "Invalid email format";
+      valid = false;
+    } else {
+      document.getElementById("emailError").innerText = "";
+    }
+
+    const message = document.getElementById("message").value.trim();
+    if(message === ""){
+      document.getElementById("messageError").innerText = "Message is required";
+      valid = false;
+    } else {
+      document.getElementById("messageError").innerText = "";
+    }
+
+    if(valid){
+      alert("Form submitted successfully!");
+      document.getElementById("contactForm").reset();
+    }
+  });
+
+  // To-Do List
+  function addTask(){
+    const taskInput = document.getElementById("taskInput");
+    const taskText = taskInput.value.trim();
+
+    if(taskText === ""){
+      alert("Please enter a task.");
+      return;
+    }
+
+    const li = document.createElement("li");
+
+    const taskSpan = document.createElement("span");
+    taskSpan.textContent = taskText;
+    taskSpan.onclick = function(){
+      li.classList.toggle("completed");
+    };
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "Delete";
+    deleteBtn.className = "deleteBtn";
+    deleteBtn.onclick = function(){
+      li.remove();
+    };
+
+    li.appendChild(taskSpan);
+    li.appendChild(deleteBtn);
+    document.getElementById("taskList").appendChild(li);
+    taskInput.value = "";
+  }
+</script>
+
+</body>
+</html>
